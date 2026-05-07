@@ -22,9 +22,6 @@ jobs:
         go mod download
         go build -o product-catalog-service main.go
 
-    - name: Build
-      run: go build -o product-catalog-service src/product-catalog-service/main.go
-
     - name: unit tests 
       run: |
        cd src/product-catalog 
@@ -37,8 +34,9 @@ jobs:
       uses: actions/checkout@v4
     - name: Run golangci-lint
       run: |
-        go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.2
-        golangci-lint run src/product-catalog/...
+        go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.56.2
+        cd src/product-catalog
+        golangci-lint run ./...
 
   docker:
     runs-on: ubuntu-latest
