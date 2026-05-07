@@ -35,6 +35,7 @@ jobs:
     - name: Run golangci-lint
       run: |
         go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.56.2
+        export PATH=$PATH:$(go env GOPATH)/bin
         cd src/product-catalog
         golangci-lint run ./...
 
@@ -58,7 +59,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: src/product-catalog
-        file: Dockerfile
+        file: src/product-catalog/Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/product-catalog-service:${{ github.run_id }}
 
@@ -72,9 +73,9 @@ jobs:
             with :
               token: ${{ secrets.GITHUB_TOKEN }}
 
-          - name: Update tag in kuberntes deployment manifest 
+          - name: Update tag in kubernetes deployment manifest 
             run: |
-              sed -i 's/image:.*/image:${{ secrets.DOCKER_USERNAME }}/' kuberntes/productcatalog/deploy.yaml 
+              sed -i 's|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/product-catalog-service:${{ github.run_id }}|g' kubernetes/productcatalog/deploy.yaml 
 
           - name: Commit and push changes  
             run : |
