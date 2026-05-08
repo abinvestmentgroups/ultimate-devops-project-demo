@@ -83,7 +83,7 @@ jobs:
               git config --global user.email "abinvestmentgroups@gmail.com"
               git add kubernetes/productcatalog/deploy.yaml
               git commit -m "[CI]: Update image product catalog image tag"
-              git push
+              git push origin HEAD:${{ github.head_ref }}
 
 
               # my new commit 
